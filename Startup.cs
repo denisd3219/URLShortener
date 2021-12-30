@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using URLShortener.Data;
 using URLShortener.Services.URLShortenerService;
@@ -38,6 +40,21 @@ namespace URLShortener
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 
 			services.Add(new ServiceDescriptor(typeof(IURLShortenerService), typeof(URLShortenerService), ServiceLifetime.Transient));
+
+			services.AddAuthentication(options => {})
+				.AddCookie(options =>
+				{
+					options.LoginPath = "/Identity/Account/Login";
+					options.LogoutPath = "/Identity/Account/Logout";
+				})
+				.AddGitHub(options =>
+				{
+					options.ClientId = Configuration["GitHub:ClientId"];
+					options.ClientSecret = Configuration["GitHub:ClientSecret"];
+					options.CallbackPath = "/signin-github";
+					options.Scope.Add("user:email");
+					options.SignInScheme = IdentityConstants.ExternalScheme;
+				});
 
 			services.AddControllersWithViews();
 		}
