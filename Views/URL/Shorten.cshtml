@@ -1,0 +1,41 @@
+﻿@model URLShortener.Models.ShortenURLRequest
+
+@{
+	ViewData["Title"] = "Shorten";
+
+}
+
+<h1>Shorten a URL</h1>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="Shorten">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<!-- <label asp-for="Original" class="control-label"></label> -->
+				<label class="control-label">Original URL:</label>
+				<input asp-for="Original" class="form-control" />
+				<span asp-validation-for="Original" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Shorten" class="btn btn-primary" />
+			</div>
+		</form>
+	</div>
+</div>
+
+@{
+	if (!string.IsNullOrEmpty(Model.Short))
+	{
+		<hr />
+		<h4>Short URL:</h4>
+		<div>
+			<a href="@Model.Short" target="_blank">@Model.Short</a>
+		</div>
+	}
+}
+
+
+@section Scripts {
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
