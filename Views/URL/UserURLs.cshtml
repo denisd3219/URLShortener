@@ -1,0 +1,28 @@
+﻿@model List<URLShortener.Models.ShortenedURL>
+
+@{
+    ViewData["Title"] = "Shortened URLs";
+
+}
+
+<h1>Shortened URLs</h1>
+<hr />
+<table class="table">
+	<thead class="thead-light">
+		<tr>
+			<th>Original</th>
+			<th>Short</th>
+			<th>Redirects</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>@item.Original</td>
+				<td>@ViewData["DomainName"]@item.Short</td>
+				<td>@item.Redirects</td>
+			</tr>
+		}
+	</tbody>
+</table>

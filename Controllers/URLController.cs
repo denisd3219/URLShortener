@@ -59,6 +59,15 @@ namespace URLShortener.Controllers
 			return View(URLRequest);
 		}
 
+		[Authorize]
+		[HttpGet]
+		public async Task<IActionResult> UserURLs()
+		{
+			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			ViewData["DomainName"] = $"{Request.Scheme}{Uri.SchemeDelimiter}{Request.Host.Value}/";
+			return View(await _db.ShortenedURLs.Where(url => url.CreatorId == userId).ToListAsync());
+		}
+
 		[HttpGet]
 		public async Task<IActionResult> ShortRedirect(string shortURL)
 		{
