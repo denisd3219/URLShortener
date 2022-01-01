@@ -10,31 +10,36 @@
 <div class="row">
 	<div class="col-md-4">
 		<form asp-action="Shorten">
+			<div class="input-group mb-3">
+				<input asp-for="Original" type="text" class="form-control" placeholder="URL">
+				<div class="input-group-append">
+					<button class="btn btn-primary" type="submit">Shorten</button>
+				</div>
+			</div>
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<!-- <label asp-for="Original" class="control-label"></label> -->
-				<label class="control-label">Original URL:</label>
-				<input asp-for="Original" class="form-control" />
-				<span asp-validation-for="Original" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<input type="submit" value="Shorten" class="btn btn-primary" />
-			</div>
+			<span asp-validation-for="Original" class="text-danger"></span>
 		</form>
 	</div>
 </div>
 
-@{
-	if (!string.IsNullOrEmpty(Model.Short))
-	{
-		<hr />
-		<h4>Short URL:</h4>
-		<div>
-			<a href="@Model.Short" target="_blank">@Model.Short</a>
+@if (!string.IsNullOrEmpty(Model.Short))
+{
+	<div class="row">
+		<div class="col-md-4">
+			<div class="input-group mb-3">
+				<input class="form-control" id="shortURLOutput" placeholder="URL" value="@Model.Short">
+				<div class="input-group-append">
+					<button class="btn btn-success" onclick="CopyToClipboard('shortURLOutput')"
+							data-toggle="popover" data-content="Copied to clipboard"
+							data-placement="right"
+							>
+						Copy
+					</button>
+				</div>
+			</div>
 		</div>
-	}
+	</div>
 }
-
 
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
