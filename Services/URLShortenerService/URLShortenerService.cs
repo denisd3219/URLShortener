@@ -24,8 +24,6 @@ namespace URLShortener.Services.URLShortenerService
 
 		public async Task<string> ShortenURL(string URL, string creatorId)
 		{
-			if(!ValidateURL(URL))
-				return null;
 			ShortenedURL sURL = new()
 			{
 				Original = URL,
@@ -36,22 +34,6 @@ namespace URLShortener.Services.URLShortenerService
 
 			await _db.SaveChangesAsync();
 			return _encoder.Encode(sURL.Id);
-		}
-
-		private bool ValidateURL(string URL)
-		{
-			Uri urlCheck = new(URL);
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlCheck);
-			request.Timeout = 10000;
-			try
-			{
-				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-			return true;
 		}
 	}
 }
