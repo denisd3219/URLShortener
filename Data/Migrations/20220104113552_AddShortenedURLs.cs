@@ -2,7 +2,7 @@
 
 namespace URLShortener.Data.Migrations
 {
-    public partial class AddShortenedURLToDB : Migration
+    public partial class AddShortenedURLs : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,6 @@ namespace URLShortener.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Original = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Short = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatorId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Redirects = table.Column<int>(type: "int", nullable: false)
                 },

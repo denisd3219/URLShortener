@@ -12,7 +12,6 @@ namespace URLShortener.Models
 		public int Id { get; set; }
 		[Required]
 		public string Original { get; set; }
-		public string Short { get; set; }
 		public string CreatorId { get; set; }
 		public int Redirects { get; set; }
 	}

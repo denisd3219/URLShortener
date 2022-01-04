@@ -10,8 +10,8 @@ using URLShortener.Data;
 namespace URLShortener.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211230115100_AddShortenedURLToDB")]
-    partial class AddShortenedURLToDB
+    [Migration("20220104113552_AddShortenedURLs")]
+    partial class AddShortenedURLs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -237,9 +237,6 @@ namespace URLShortener.Data.Migrations
 
                     b.Property<int>("Redirects")
                         .HasColumnType("int");
-
-                    b.Property<string>("Short")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

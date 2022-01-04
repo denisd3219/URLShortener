@@ -236,9 +236,6 @@ namespace URLShortener.Data.Migrations
                     b.Property<int>("Redirects")
                         .HasColumnType("int");
 
-                    b.Property<string>("Short")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("ShortenedURLs");

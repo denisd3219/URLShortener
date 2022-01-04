@@ -1,7 +1,9 @@
-﻿@model List<URLShortener.Models.ShortenedURL>
+﻿@using URLShortener.Services.IDEncoder;
+@model List<URLShortener.Models.ShortenedURL>
+@inject IIDEncoder encoder
 
 @{
-    ViewData["Title"] = "Shortened URLs";
+	ViewData["Title"] = "Shortened URLs";
 
 }
 
@@ -20,7 +22,7 @@
 		{
 			<tr>
 				<td>@item.Original</td>
-				<td>@ViewData["DomainName"]@item.Short</td>
+				<td>@ViewData["DomainName"]@encoder.Encode(item.Id)</td>
 				<td>@item.Redirects</td>
 			</tr>
 		}

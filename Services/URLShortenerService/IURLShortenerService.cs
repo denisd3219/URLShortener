@@ -5,6 +5,6 @@ namespace URLShortener.Services.URLShortenerService
 {
 	public interface IURLShortenerService
 	{
-		Task<ShortenedURL> ShortenURL(string URL, string creatorId);
+		Task<string> ShortenURL(string URL, string creatorId);
 	}
 }

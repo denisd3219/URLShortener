@@ -14,6 +14,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using URLShortener.Data;
+using URLShortener.Services.IDEncoder;
 using URLShortener.Services.URLShortenerService;
 
 namespace URLShortener
@@ -39,6 +40,7 @@ namespace URLShortener
 			services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 
+			services.Add(new ServiceDescriptor(typeof(IIDEncoder), typeof(Base36IDEncoder), ServiceLifetime.Singleton));
 			services.Add(new ServiceDescriptor(typeof(IURLShortenerService), typeof(URLShortenerService), ServiceLifetime.Transient));
 
 			services.AddAuthentication(options => {})

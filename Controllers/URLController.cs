@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using URLShortener.Data;
 using URLShortener.Models;
+using URLShortener.Services.IDEncoder;
 using URLShortener.Services.URLShortenerService;
 
 namespace URLShortener.Controllers
@@ -17,11 +18,13 @@ namespace URLShortener.Controllers
 	{
 		private readonly ApplicationDbContext _db;
 		private readonly IURLShortenerService _shortener;
+		private readonly IIDEncoder _encoder;
 
-		public URLController(ApplicationDbContext db, IURLShortenerService shortener)
+		public URLController(ApplicationDbContext db, IURLShortenerService shortener, IIDEncoder encoder)
 		{
 			_db = db;
 			_shortener = shortener;
+			_encoder = encoder;
 		}
 
 		[Authorize]
@@ -39,23 +42,12 @@ namespace URLShortener.Controllers
 		{
 			if (!ModelState.IsValid)
 				return View(URLRequest);
+			ViewData["DomainName"] = $"{Request.Scheme}{Uri.SchemeDelimiter}{Request.Host.Value}/";
 
-			string domainName = $"{Request.Scheme}{Uri.SchemeDelimiter}{Request.Host.Value}/";
-
-			ShortenedURL sURL = await _db.ShortenedURLs.FirstOrDefaultAsync(url => url.Original == URLRequest.Original);
-			if (sURL != null)
-			{
-				URLRequest.Short = domainName + sURL.Short;
-				return View(URLRequest);
-			}
 
 			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			sURL = await _shortener.ShortenURL(URLRequest.Original, userId);
+			URLRequest.Short = await _shortener.ShortenURL(URLRequest.Original, userId);
 			
-
-			if (sURL != null)
-				URLRequest.Short = domainName + sURL.Short;
-
 			return View(URLRequest);
 		}
 
@@ -63,8 +55,8 @@ namespace URLShortener.Controllers
 		[HttpGet]
 		public async Task<IActionResult> UserURLs()
 		{
-			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			ViewData["DomainName"] = $"{Request.Scheme}{Uri.SchemeDelimiter}{Request.Host.Value}/";
+			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			return View(await _db.ShortenedURLs.Where(url => url.CreatorId == userId).ToListAsync());
 		}
 
@@ -74,7 +66,7 @@ namespace URLShortener.Controllers
 			if (shortURL == null)
 				return NotFound();
 
-			ShortenedURL sURL = await _db.ShortenedURLs.FirstOrDefaultAsync(url => url.Short == shortURL);
+			ShortenedURL sURL = await _db.ShortenedURLs.FindAsync(_encoder.Decode(shortURL));
 
 			if (sURL == null)
 				return NotFound();
@@ -83,7 +75,7 @@ namespace URLShortener.Controllers
 			_db.Update(sURL);
 			await _db.SaveChangesAsync();
 
-			return RedirectPermanent(sURL.Original);
+			return Redirect(sURL.Original);
 		}
 	}
 }
