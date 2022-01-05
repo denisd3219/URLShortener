@@ -1,30 +1,44 @@
 ﻿@using URLShortener.Services.IDEncoder;
-@model List<URLShortener.Models.ShortenedURL>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@using X.PagedList;
 @inject IIDEncoder encoder
+@model IPagedList<ShortenedURL>
 
 @{
 	ViewData["Title"] = "Shortened URLs";
-
 }
 
 <h1>Shortened URLs</h1>
 <hr />
-<table class="table">
-	<thead class="thead-light">
-		<tr>
-			<th>Original</th>
-			<th>Short</th>
-			<th>Redirects</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var item in Model)
+<div class="row">
+	@Html.PagedListPager(Model,
+		page => ViewBag.DomainName + "URL/UserURLs/" + page,
+		new PagedListRenderOptions
 		{
-			<tr>
-				<td>@item.Original</td>
-				<td>@ViewData["DomainName"]@encoder.Encode(item.Id)</td>
-				<td>@item.Redirects</td>
-			</tr>
+			LiElementClasses = new string[] { "page-item" },
+			PageClasses = new string[] { "page-link" }
 		}
-	</tbody>
-</table>
+	)
+</div>
+<div class="row">
+	<table class="table">
+		<thead class="thead-light">
+			<tr>
+				<th>Original</th>
+				<th>Short</th>
+				<th>Redirects</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>@item.Original</td>
+					<td>@ViewBag.DomainName@encoder.Encode(item.Id)</td>
+					<td>@item.Redirects</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>

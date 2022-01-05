@@ -11,6 +11,7 @@ using URLShortener.Data;
 using URLShortener.Models;
 using URLShortener.Services.IDEncoder;
 using URLShortener.Services.URLShortenerService;
+using X.PagedList;
 
 namespace URLShortener.Controllers
 {
@@ -44,7 +45,6 @@ namespace URLShortener.Controllers
 				return View(URLRequest);
 			ViewData["DomainName"] = $"{Request.Scheme}{Uri.SchemeDelimiter}{Request.Host.Value}/";
 
-
 			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			URLRequest.Short = await _shortener.ShortenURL(URLRequest.Original, userId);
 			
@@ -53,11 +53,16 @@ namespace URLShortener.Controllers
 
 		[Authorize]
 		[HttpGet]
-		public async Task<IActionResult> UserURLs()
+		public async Task<IActionResult> UserURLs(int pageNum)
 		{
-			ViewData["DomainName"] = $"{Request.Scheme}{Uri.SchemeDelimiter}{Request.Host.Value}/";
+			if (pageNum < 1)
+				pageNum = 1;
+			ViewBag.DomainName = $"{Request.Scheme}{Uri.SchemeDelimiter}{Request.Host.Value}/";
 			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			return View(await _db.ShortenedURLs.Where(url => url.CreatorId == userId).ToListAsync());
+
+			return View(await _db.ShortenedURLs
+				.Where(url => url.CreatorId == userId)
+				.ToPagedListAsync(pageNum, 20));
 		}
 
 		[HttpGet]

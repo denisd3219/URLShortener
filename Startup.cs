@@ -90,16 +90,17 @@ namespace URLShortener
 					pattern: "{shortURL}",
 					defaults: new { controller = "URL", action = "ShortRedirect" }
 				);
-				
+
 				endpoints.MapControllerRoute(
-					name: "default",
-					pattern: "{controller=Home}/{action=Index}/{id?}"
+					name: "userURLs",
+					pattern: "URL/UserURLs/{pageNum}",
+					defaults: new { controller = "URL", action = "UserURLs" }
 				);
 
 				endpoints.MapControllerRoute(
-					name: "shorten",
-					pattern: "{controller=URL}/{action=Shorten}/{URL?}"
-				);		
+					name: "default",
+					pattern: "{controller=Home}/{action=Index}"
+				);
 
 				endpoints.MapRazorPages();
 			});
